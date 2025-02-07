@@ -128,9 +128,10 @@ class ProductCard extends StatelessWidget {
                 child: Container(
                   height: 100,
                   color: color,
+                  alignment: Alignment.center,
                   child: Text(
                     title,
-                    style: TextStyle(color: Colors.white),
+                    style: TextStyle(color: Colors.white, fontSize: 30),
                   ),
                 ),
               ),
