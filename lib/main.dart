@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'screens/pixel_screen.dart';
-import 'screens/laptop_screen.dart';
-import 'screens/tablet_screen.dart';
-import 'screens/pendrive_screen.dart';
-import 'screens/floppy_screen.dart';
+// import 'package:mobile_dev_navigation_practice/screens/product_details_screen.dart';
+// import 'package:mobile_dev_navigation_practice/screens/product_screen.dart';
 
 void main() {
   runApp(MyApp());
@@ -17,63 +14,78 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: ProductNavigation(),
+      home: ProductScreen(),
       routes: {
-        '/pixel': (context) => PixelScreen(),
-        '/laptop': (context) => LaptopScreen(),
-        '/tablet': (context) => TabletScreen(),
-        '/pendrive': (context) => PendriveScreen(),
-        '/floppy': (context) => FloppyScreen(),
+        '/product': (context) => ProductDetailsScreen(),
       },
     );
   }
 }
 
-class ProductNavigation extends StatelessWidget {
+class ProductScreen extends StatelessWidget {
+  const ProductScreen({super.key});
+
+  static final List<Map<String, dynamic>> products = [
+    {
+      'name': 'Pixel',
+      'description': 'Pixel is the most feautureful phone ever',
+      'price': 800,
+      'rating': 2,
+      'color': Colors.blue,
+    },
+    {
+      'name': 'laptop',
+      'description': 'Laptop is the most productive development tool',
+      'price': 2000,
+      'rating': 3,
+      'color': Colors.green,
+    },
+    {
+      'name': 'Tablet',
+      'description': 'Tablet is the most productive development tool',
+      'price': 1500,
+      'rating': 0,
+      'color': Colors.yellow,
+    },
+    {
+      'name': 'Phone',
+      'description': 'Phone is the most productive development tool',
+      'price': 1000,
+      'rating': 0,
+      'color': Colors.red,
+    },
+    {
+      'name': 'Pen Drive',
+      'description': 'Pen Drive is the most productive development tool',
+      'price': 500,
+      'rating': 0,
+      'color': Colors.purple,
+    },
+    {
+      'name': 'Floppy',
+      'description': 'Floppy is the most productive development tool',
+      'price': 50,
+      'rating': 0,
+      'color': Colors.orange,
+    },
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Product Navigation'),
-      ),
-      body: ListView(
-        children: [
-          ProductCard(
-            title: 'pixel 1',
-            description: 'Pixel is the most featureful phone ever',
-            price: 800,
-            color: Colors.blue,
-            route: '/pixel',
-          ),
-          ProductCard(
-            title: 'laptop',
-            description: 'Laptop is most productive development tool',
-            price: 2000,
-            color: Colors.green,
-            route: '/laptop',
-          ),
-          ProductCard(
-            title: 'tablet',
-            description: 'Tablet is the most useful device for meeting',
-            price: 1500,
-            color: Colors.amber,
-            route: '/tablet',
-          ),
-          ProductCard(
-            title: 'pen drive',
-            description: 'iPhone is the stylist phone ever',
-            price: 100,
-            color: Colors.deepOrange,
-            route: '/pendrive',
-          ),
-          ProductCard(
-            title: 'Floppy Drive',
-            description: 'Floppy is the stylist phone ever',
-            price: 100,
-            color: Colors.teal,
-            route: '/floppy',
-          ),
-        ],
+          title: Text("Product Navigation"), backgroundColor: Colors.blue),
+      body: ListView.builder(
+        itemCount: products.length,
+        itemBuilder: (context, index) {
+          return ProductCard(
+            title: products[index]['name'],
+            description: products[index]['description'],
+            price: products[index]['price'],
+            rating: products[index]['rating'],
+            color: products[index]['color'],
+          );
+        },
       ),
     );
   }
@@ -82,62 +94,145 @@ class ProductNavigation extends StatelessWidget {
 class ProductCard extends StatelessWidget {
   final String title;
   final String description;
-  final double price;
   final Color color;
-  final String route;
+  final int? rating;
+  final int price;
 
   const ProductCard({
+    super.key,
     required this.title,
     required this.description,
-    required this.price,
     required this.color,
-    required this.route,
+    this.rating,
+    required this.price,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.all(8.0),
-      child: InkWell(
-        onTap: () => Navigator.pushNamed(context, route),
-        child: Row(
-          children: [
-            Container(
-              width: 100,
-              height: 100,
-              color: color,
-              alignment: Alignment.center,
-              child: Text(
-                title,
-                style: TextStyle(color: Colors.white),
-              ),
+    return InkWell(
+        onTap: () => Navigator.pushNamed(
+              context,
+              '/product',
+              arguments: {
+                'title': title,
+                'description': description,
+                'price': price,
+                'rating': rating ?? 0,
+                'color': color,
+              },
             ),
-            Expanded(
-              child: Padding(
-                padding: EdgeInsets.all(8.0),
+        child: Card(
+          child: Row(
+            children: [
+              Expanded(
+                child: Container(
+                  height: 100,
+                  color: color,
+                  child: Text(
+                    title,
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ),
+              Expanded(
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text(
-                      title.toUpperCase(),
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
+                    Text(title, style: TextStyle(fontWeight: FontWeight.bold)),
                     Text(description),
-                    Text('Price: \$${price.toStringAsFixed(0)}'),
-                    Row(
-                      children: [
-                        Icon(Icons.star_border, color: Colors.red),
-                        Icon(Icons.star_border, color: Colors.red),
-                        Icon(Icons.star_border, color: Colors.red),
-                      ],
-                    ),
+                    Text('Price: \$${price}'),
+                    if (rating != null)
+                      Stars(rating: rating!)
+                    else
+                      Stars(rating: 0),
                   ],
                 ),
               ),
-            ),
-          ],
-        ),
-      ),
+            ],
+          ),
+        ));
+  }
+}
+
+class Stars extends StatelessWidget {
+  final int rating;
+
+  const Stars({super.key, required this.rating});
+
+  @override
+  Widget build(BuildContext context) {
+    int displayedRating = rating.clamp(0, 3);
+
+    List<Widget> stars = List.generate(3, (index) {
+      return Icon(
+        index < displayedRating ? Icons.star : Icons.star_border,
+        color: Colors.amber,
+        size: 24,
+      );
+    });
+
+    return Row(
+      mainAxisAlignment:
+          MainAxisAlignment.center, // Center the stars horizontally
+      children: stars,
     );
+  }
+}
+
+class ProductDetailsScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    // Get the arguments passed via Navigator.pushNamed
+    final args =
+        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+
+    if (args == null) {
+      return Scaffold(
+        appBar: AppBar(title: Text("Error")),
+        body: Center(child: Text('No data passed to the screen')),
+      );
+    }
+
+    // Extract product data from arguments
+    final String title = args['title'];
+    final String description = args['description'];
+    final int price = args['price'];
+    final int rating = args['rating'];
+    final Color color = args['color'];
+
+    return Scaffold(
+        appBar: AppBar(
+          title: Text(title),
+          backgroundColor: color,
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(0),
+          child: Center(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                  height: 200,
+                  width: double.infinity,
+                  color: color,
+                  alignment: Alignment.center,
+                  child: Center(
+                    child: Text(
+                      title,
+                      style: TextStyle(color: Colors.white, fontSize: 24),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 16),
+                Text('Description: $description'),
+                SizedBox(height: 16),
+                Text('Price: \$${price}'),
+                SizedBox(height: 16),
+                Text('Rating:'),
+                Stars(rating: rating),
+              ],
+            ),
+          ),
+        ));
   }
 }
