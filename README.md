@@ -35,7 +35,7 @@ The **Flutter Product Navigation App** is a mobile application built with Flutte
    ```
 
 ## Contributors
-- **Annabel** - Project Setup & Main App Structure
+- **Annabelle** - Project Setup & Main App Structure
 - **Micheal** - Product List Screen
 - **Jeremiah** - Product Details Screen
 - **Sabinea** - UI & Styling
